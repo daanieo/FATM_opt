@@ -123,9 +123,6 @@ def make_grid_gdf(extr_x,
 
     gdf = gp.GeoDataFrame(gdf_as_dict); # Create geodataframe from dict
 
-    #gdf.to_csv("save_files/grid.csv") # Save geodataframe as csv
-    gdf.to_file("save_files/grid.shp") # Save geodataframe as shp
-
     return gdf
 
 # Function serving as input for plotting the grid and construction of the cell polygons
@@ -190,8 +187,8 @@ def make_road_heatmap(grid_gdf,
         print("Cell size is ", distance," km")
 
     compute_cell_size()
-
-    fig,ax = plt.subplots(1,1) # Define figure and axis
+    dims = (10, 6) # define dimensions tuple
+    fig,ax = plt.subplots(1,1,figsize=dims) # Define figurex axis for subplots and dimensions
 
     plt.xlim([extr_x[0],extr_x[1]]) # set xlim
     plt.ylim([extr_y[0],extr_y[1]]) # set ylim
@@ -249,8 +246,5 @@ def buildings_shp_to_df(address_of_shp):
     df_as_dict["y"]=y_list
 
     df = pd.DataFrame(df_as_dict)
-
-    # Save as .csv in same folder as function
-    df.to_csv("save_files\buildings_df.csv")
 
     return df

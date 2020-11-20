@@ -3,21 +3,28 @@ if __name__ == "__main__":
     import os 
 
     
-
-    from platypus_multifac import outcome_generation
-    import geopandas
     import pandas as pd
+    import geopandas
+    from opt_funcs import optimise
 
-    grid_gdf = geopandas.read_file("save_files/grid_70/grid.shp")
-    buildings_df_zone02 = pd.read_csv("save_files/InitialRun/buildings_zone02.csv")
-    x_steps=70
+    buildings_df = pd.read_csv("save_files/buildings_all_zones_df.csv")
+    grid_gdf = geopandas.read_file("save_files/grid_250.shp")
+    grid_intervals = 250
 
-    raw_results = outcome_generation  (n_fac_min=1,
-                                       n_fac_max=15,
-                                       nb_days_min=1,
-                                       nb_days_max=1,
-                                      buildings_df=buildings_df_zone02,
-                                       gdf=grid_gdf,
-                                       grid_intervals=x_steps,
-                                      iterations=1000)
+    res = optimise(n_fac=12,
+                   n_iterations=10000,
+                   buildings_df=buildings_df,
+                   grid_gdf=grid_gdf,
+                   grid_intervals=grid_intervals)
+
+    vardict = {}
+    obdict = {}
+    for r in range(len(res.result)):
+        vardict[r] = res.result[r].variables
+        obdict[r] = res.result[r].objectives[:]
+        
+    pd.DataFrame(obdict).to_csv("save_files/ob_init.csv")
+    pd.DataFrame(vardict).to_csv("save_files/var_init.csv")
+
+
     os.system("shutdown")
