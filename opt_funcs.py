@@ -46,7 +46,7 @@ def optimise (n_fac,
                 presence = grid_gdf.roads[coord]
                 break
 
-        penalty = 3000 * (1-presence)
+        penalty = (1-presence) #* 3000
 
         return penalty # 0 when there's roads, penalty when there are
 
