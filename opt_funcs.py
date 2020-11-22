@@ -1,11 +1,4 @@
-
-
-
-
-
-# we need the list of buildings
-# we need the list road grid
-    # Returns value for KPIs based on platypus-generated vars (= lon,lat facility)
+# Returns value for KPIs based on platypus-generated vars (= lon,lat facility)
 def optimise (n_fac,
                 n_iterations,
                 buildings_df,

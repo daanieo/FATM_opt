@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov 21 18:01:08 2020
+
+@author: daan
+"""
+
 import math
 from platypus import *
 import numpy as np
@@ -163,11 +171,12 @@ problem.directions[:] = problem.MINIMIZE
 
 problem.constraints[:] = [">=0",">=0","==0",">=0"]
 
+
 problems = [problem]
 
 with ProcessPoolEvaluator(10) as evaluator:
     # run the experiment
-    results = experiment(algorithms, problems, nfe=20000,evaluator=evaluator,seeds=10)
+    results = experiment(algorithms, problems, nfe=n_iterations,evaluator=evaluator,seeds=10)
     
     # calculate the hypervolume indicator
     hyp = Hypervolume(minimum=[0,0,0,0], maximum=[5,25,n_fac,10000])
@@ -175,10 +184,11 @@ with ProcessPoolEvaluator(10) as evaluator:
     display(hyp_result, ndigits=3)
 
 # DONT FORGET TO UPDATE THIS: nfe1000_seeds_algorithm_C
-run_name = "nfe20000_10_NSGAII_C"
+run_name = "nfe10000_10_NSGAIII_C"
+
 
 hyp_list = list()
-hyp_list.append(hyp_result['NSGAII']['Problem']['Hypervolume'])
+hyp_list.append(hyp_result['NSGAIII']['Problem']['Hypervolume'])
 
 pd.DataFrame(hyp_list).to_csv("save_files/hypervolumes_%s.csv"%run_name)
 
@@ -186,7 +196,7 @@ pd.DataFrame(hyp_list).to_csv("save_files/hypervolumes_%s.csv"%run_name)
 varlist = list()
 oblist = list()
 
-for j in results['NSGAII']['Problem']:
+for j in results['NSGAIII']['Problem']:
     for k in j:
         varlist.append(k.variables)
         oblist.append(k.objectives[:])

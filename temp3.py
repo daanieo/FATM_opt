@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov 21 18:14:08 2020
+
+@author: daan
+"""
+
 import math
 from platypus import *
 import numpy as np
@@ -161,7 +169,7 @@ problem.types[:] = p_types
 problem.function = determine_KPIs
 problem.directions[:] = problem.MINIMIZE
 
-problem.constraints[:] = [">=0",">=0","==0",">=0"]
+# problem.constraints[:] = [">=0",">=0","==0",">=0"]
 
 problems = [problem]
 
@@ -175,7 +183,7 @@ with ProcessPoolEvaluator(10) as evaluator:
     display(hyp_result, ndigits=3)
 
 # DONT FORGET TO UPDATE THIS: nfe1000_seeds_algorithm_C
-run_name = "nfe20000_10_NSGAII_C"
+run_name = "nfe20000_10_NSGAII_NC"
 
 hyp_list = list()
 hyp_list.append(hyp_result['NSGAII']['Problem']['Hypervolume'])
