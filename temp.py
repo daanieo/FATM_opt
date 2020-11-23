@@ -14,6 +14,14 @@ n_fac = 12
 
 n_iterations = 10000
 
+a = Permutation([(0,1), (3,4)])
+
+
+def f(x,y):
+    
+    print("combination is ",x," and ",y)
+    
+    return x+y
 
 
 
@@ -161,13 +169,13 @@ problem.types[:] = p_types
 problem.function = determine_KPIs
 problem.directions[:] = problem.MINIMIZE
 
-problem.constraints[:] = [">=0",">=0","==0",">=0"]
+problem.constraints[:] = [">=0",">=0",">=0",">=0"]
 
 problems = [problem]
 
 with ProcessPoolEvaluator(10) as evaluator:
     # run the experiment
-    results = experiment(algorithms, problems, nfe=20000,evaluator=evaluator,seeds=10)
+    results = experiment(algorithms, problems, nfe=100,evaluator=evaluator,seeds=10)
     
     # calculate the hypervolume indicator
     hyp = Hypervolume(minimum=[0,0,0,0], maximum=[5,25,n_fac,10000])
@@ -175,7 +183,8 @@ with ProcessPoolEvaluator(10) as evaluator:
     display(hyp_result, ndigits=3)
 
 # DONT FORGET TO UPDATE THIS: nfe1000_seeds_algorithm_C
-run_name = "nfe20000_10_NSGAII_C"
+# run_name = "nfe20000_10_NSGAII_C"
+run_name = "test"
 
 hyp_list = list()
 hyp_list.append(hyp_result['NSGAII']['Problem']['Hypervolume'])
