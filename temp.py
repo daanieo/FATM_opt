@@ -12,16 +12,7 @@ grid_gdf = geopandas.read_file("save_files/grid_250.shp")
 grid_intervals = 250
 n_fac = 12
 
-n_iterations = 10000
-
-a = Permutation([(0,1), (3,4)])
-
-
-def f(x,y):
-    
-    print("combination is ",x," and ",y)
-    
-    return x+y
+n_iterations = 15000
 
 
 
@@ -142,8 +133,8 @@ def determine_KPIs(vars,
     # Return results
     return [mean_distance,
             var_distance,
-            investment_costs,
-            np.max(dev_coverage)]
+            investment_costs]
+            # np.max(dev_coverage)]
 
 
 # Extreme x-y coordinates for the bidibidi polygon
@@ -160,7 +151,7 @@ for i in range(n_fac):
     hmax[2*i+1] = extr_y[1]
 
 algorithms = [NSGAII]#, (NSGAIII, {"divisions_outer":12})]
-problem = Problem(2*n_fac,4) # 2 coordinates per facility, 4 KPI
+problem = Problem(2*n_fac,3) # 2 coordinates per facility, 4 KPI
 p_types = list()
 for f in range(n_fac):
     p_types.append(Real(extr_x[0],extr_x[1]))
@@ -175,7 +166,7 @@ problems = [problem]
 
 with ProcessPoolEvaluator(10) as evaluator:
     # run the experiment
-    results = experiment(algorithms, problems, nfe=100,evaluator=evaluator,seeds=10)
+    results = experiment(algorithms, problems, nfe=n_iterations,evaluator=evaluator,seeds=10)
     
     # calculate the hypervolume indicator
     hyp = Hypervolume(minimum=[0,0,0,0], maximum=[5,25,n_fac,10000])
@@ -183,8 +174,8 @@ with ProcessPoolEvaluator(10) as evaluator:
     display(hyp_result, ndigits=3)
 
 # DONT FORGET TO UPDATE THIS: nfe1000_seeds_algorithm_C
-# run_name = "nfe20000_10_NSGAII_C"
-run_name = "test"
+run_name = "nfe15000_10_NSGAII_NC"
+
 
 hyp_list = list()
 hyp_list.append(hyp_result['NSGAII']['Problem']['Hypervolume'])
@@ -209,7 +200,7 @@ variables.to_csv("save_files/variables_%s.csv"%run_name)
             
 import seaborn
 objectives = pd.DataFrame(oblist)#[0:100])
-objectives.columns = ["avg_distance","max_distance","penalty","div_coverage"]
+objectives.columns = ["avg_distance","max_distance","penalty"]#,"div_coverage"]
 seaborn.set_context( rc={"axes.labelsize":15})
 pp = seaborn.pairplot(objectives)#raw_results.iloc[:,1:])
 pp.fig.suptitle("Pairplot: %s"%run_name,y=1.03,size=25);
