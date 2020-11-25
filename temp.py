@@ -150,7 +150,7 @@ for i in range(n_fac):
     hmax[2*i] = extr_x[1]
     hmax[2*i+1] = extr_y[1]
 
-algorithms = [NSGAII]#, (NSGAIII, {"divisions_outer":12})]
+algorithms = [MOEAD]# [NSGAII]#, (NSGAIII, {"divisions_outer":12})]
 problem = Problem(2*n_fac,3) # 2 coordinates per facility, 4 KPI
 p_types = list()
 for f in range(n_fac):
@@ -160,7 +160,7 @@ problem.types[:] = p_types
 problem.function = determine_KPIs
 problem.directions[:] = problem.MINIMIZE
 
-problem.constraints[:] = [">=0",">=0",">=0",">=0"]
+# problem.constraints[:] = [">=0",">=0",">=0",">=0"]
 
 problems = [problem]
 
@@ -169,16 +169,16 @@ with ProcessPoolEvaluator(10) as evaluator:
     results = experiment(algorithms, problems, nfe=n_iterations,evaluator=evaluator,seeds=10)
     
     # calculate the hypervolume indicator
-    hyp = Hypervolume(minimum=[0,0,0,0], maximum=[5,25,n_fac,10000])
+    hyp = Hypervolume(minimum = [0,0,0], maximum = [5,25,n_fac]) #minimum=[0,0,0,0], maximum=[5,25,n_fac,10000])
     hyp_result = calculate(results, hyp)
     display(hyp_result, ndigits=3)
 
 # DONT FORGET TO UPDATE THIS: nfe1000_seeds_algorithm_C
-run_name = "nfe15000_10_NSGAII_NC"
+run_name = "nfe10000_10_MOEAD_NC"
 
 
 hyp_list = list()
-hyp_list.append(hyp_result['NSGAII']['Problem']['Hypervolume'])
+hyp_list.append(hyp_result['MOEAD']['Problem']['Hypervolume'])
 
 pd.DataFrame(hyp_list).to_csv("save_files/hypervolumes_%s.csv"%run_name)
 
