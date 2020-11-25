@@ -194,7 +194,7 @@ def make_road_heatmap(grid_gdf,
     plt.ylim([extr_y[0],extr_y[1]]) # set ylim
     plt.title('Heatmap for cells with road connection') # set title
 
-    geoplot.choropleth(grid_gdf,ax=ax,hue=grid_gdf['roads'],legend=True,cmap='RdYlGn') # draw heatmap
+    geoplot.choropleth(grid_gdf,ax=ax,hue=grid_gdf['roads'],legend=False,cmap='RdYlGn') # draw heatmap
     roads_shp.plot(ax=ax,color='yellow') # draw roads
 
 
