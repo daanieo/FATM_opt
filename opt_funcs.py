@@ -1,5 +1,5 @@
 # Returns value for KPIs based on platypus-generated vars (= lon,lat facility)
-def optimise (n_fac,
+def optimise (  n_fac,
                 n_iterations,
                 buildings_df,
                 grid_gdf,
@@ -39,7 +39,7 @@ def optimise (n_fac,
                 presence = grid_gdf.roads[coord]
                 break
 
-        penalty = (1-presence) #* 3000
+        penalty = (1-presence) # 3000
 
         return penalty # 0 when there's roads, penalty when there are
 
@@ -103,6 +103,9 @@ def optimise (n_fac,
             fac_nb[closest_fac] += 1
             dist_b[b] = min_distance
 
+
+
+
         # Total inv and op costs
         investment_costs = 0
         operational_costs = 0
@@ -118,18 +121,15 @@ def optimise (n_fac,
             investment_costs += penalty
             # operational_costs += costs
 
-            dev_coverage.append(np.abs(fac_nb[index] - 2500*2.587))
+            dev_coverage.append(np.max( [0, (fac_nb[index] - len(buildings_df)/n_fac ) ] ))
 
-        # Compute mean and variance of distance
+        # Compute mean and max of distance
         mean_distance = np.mean(dist_b)
-        #var_distance = np.var(dist_b)
-        var_distance = np.max(dist_b)
-
-        print("Call")
+        max_distance = np.max(dist_b)
 
         # Return results
         return [mean_distance,
-                var_distance,
+                max_distance,
                 investment_costs,
                 np.max(dev_coverage)]
 

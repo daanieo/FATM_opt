@@ -12,6 +12,8 @@ def optimise_parallel (n_fac,
                 grid_gdf,
                 grid_intervals):
 
+    print("hello")
+
     import math
     from platypus import NSGAII,Problem,experiment,Hypervolume,calculate,display,Real,ProcessPoolEvaluator
     import numpy as np
@@ -120,23 +122,21 @@ def optimise_parallel (n_fac,
         for index in range(len(fac_nb)):
 
             penalty = penalty_road_absence(x=fac_x_list[index],y=fac_y_list[index])
-            #costs = determine_costs(nb_days=nb_days,nb_people=fac_nb[index]) # NOTE: number of people equals number of buildings
 
             investment_costs += penalty
-            # operational_costs += costs
+           
 
-            dev_coverage.append(np.abs(fac_nb[index] - 2500*2.587))
+            dev_coverage.append(np.max( [0, (fac_nb[index] - len(buildings_df)/n_fac ) ] ))
 
         # Compute mean and variance of distance
         mean_distance = np.mean(dist_b)
-        #var_distance = np.var(dist_b)
-        var_distance = np.max(dist_b)
+        max_distance = np.max(dist_b)
 
-        print("jlfdsjlkds")
+        print(dev_coverage)
 
         # Return results
         return [mean_distance,
-                var_distance,
+                max_distance,
                 investment_costs,
                 np.max(dev_coverage)]
 
@@ -145,7 +145,7 @@ def optimise_parallel (n_fac,
     extr_x = [31.20268, 31.5128083]
     extr_y = [3.1833812, 3.5854929]
 
-
+    print(extr_x)
     # Problem definition
     problem = Problem(2*n_fac,4) # 2 coordinates per facility, 4 KPI
     p_types = list()
@@ -163,10 +163,11 @@ def optimise_parallel (n_fac,
 #######################################
     algorithms = [NSGAII]
 
+    print("start opt")
     with ProcessPoolEvaluator(4) as evaluator:
         results = experiment(algorithms, problem, nfe=10000, evaluator=evaluator)
 
-        hyp = Hypervolume(minimum=[0, 0, 0,0], maximum=[1, 1, 1,0] )
+        hyp = Hypervolume(minimum=[0, 0, 0,0], maximum=[1, 1, 1,1] )
         hyp_result = calculate(results, hyp, evaluator=evaluator)
         display(hyp_result, ndigits=3)
 
